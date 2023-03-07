@@ -18,6 +18,7 @@ public class DepartmentController {
 
     private static final String POST_DEPARTMENT = "/";
     
+    // 주석
     @PostMapping(POST_DEPARTMENT)
     public ResponseDto<PostDepartmentResponseDto> postDepartment(@Valid @RequestBody PostDepartmentRequestDto requestBody) {
         return null;
