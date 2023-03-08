@@ -17,8 +17,8 @@ public class PostDepartmentResponseDto {
 
     public PostDepartmentResponseDto(DepartmentEntity departmentEntity) {
         this.departmentCode = departmentEntity.getDepartmentCode();
-        this.name = departmentEntity.getName();
-        this.cheif = departmentEntity.getCheif();
-        this.telNumber = departmentEntity.getTelNumber();
+        this.name           = departmentEntity.getName();
+        this.cheif          = departmentEntity.getCheif();
+        this.telNumber      = departmentEntity.getTelNumber();
     }
 }
