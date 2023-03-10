@@ -3,6 +3,7 @@ package com.koreait.board.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,7 +45,8 @@ public class HumanResourceController { // = controller의 가장 중요한 두�
     // get에서는 ReqDto를 만들어줄 필요가 없음
     //? GET http://localhost4040/apis/hr/사원번호
     @GetMapping(GET_HUMAN_RESOURCE)
-    public ResponseDto<GetHumanResourceResponseDto> getHumanResource(@PathVariable("employeeNumber") int employeeNumber) {
+    public ResponseDto<GetHumanResourceResponseDto> getHumanResource(@AuthenticationPrincipal String sub, @PathVariable("employeeNumber") int employeeNumber) {
+        System.out.println("sub: " + sub);
         ResponseDto<GetHumanResourceResponseDto> response = humanResourceService.getHumanResource(employeeNumber);
 
         return response;

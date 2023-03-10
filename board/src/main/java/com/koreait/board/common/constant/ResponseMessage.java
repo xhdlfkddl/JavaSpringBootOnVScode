@@ -13,4 +13,8 @@ public class ResponseMessage {
 
     public static final String NOT_EXIST_DEPARTMENT_CODE = "Does not exist department code";
     public static final String NOT_EXIST_EMPLOYEE_NUMBER = "Does not exist employee number";
+    
+    public static final String REFERRING_TO_EXISTS = "Referring to Exists";
+
+    public static final String ALREADY_IN_CHARGE_OF_DEPARTMENT_HEAD = "Already in charge of department head";
 }
