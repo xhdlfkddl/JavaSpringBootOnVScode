@@ -30,7 +30,7 @@ public class TokenProvider {
                     Jwts.builder()
                     //? 암호화 알고리즘, 암호화 할 때 사용할 키 (설정)
                     .signWith(SignatureAlgorithm.HS256, "SecureKey")
-                    //? jwt sub의 값 지정
+                    //? jwt sub의 값 지정 (= 코드 안에 들어있는 정보)
                     .setSubject("id")
                     //? jwt iat의 값 지정 (= 생성시간 설정)
                     .setIssuedAt(new Date())

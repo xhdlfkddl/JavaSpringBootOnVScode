@@ -43,17 +43,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 3시 40분
             //? 검증: Token의 존재 여부
             if (token == null) throw new Exception();  
+                
+            //
+            String sub = tokenProvider.validate(token);
 
-                String sub = tokenProvider.validate(token);
+            AbstractAuthenticationToken authenticationToken = 
+                new UsernamePasswordAuthenticationToken(sub, null, AuthorityUtils.NO_AUTHORITIES);
 
-                AbstractAuthenticationToken authenticationToken = 
-                    new UsernamePasswordAuthenticationToken(sub, null, AuthorityUtils.NO_AUTHORITIES);
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                securityContext.setAuthentication(authenticationToken);
-                SecurityContextHolder.setContext(securityContext);
+            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+            securityContext.setAuthentication(authenticationToken);
+            SecurityContextHolder.setContext(securityContext);
             
         } catch (Exception exception) {
             exception.printStackTrace();

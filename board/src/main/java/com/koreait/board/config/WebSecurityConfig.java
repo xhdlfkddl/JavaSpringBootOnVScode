@@ -27,9 +27,9 @@ public class WebSecurityConfig {
                 .csrf().disable()
                 .httpBasic().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                // 해당 두 작업에서는 인증 처리하지않겠다는 것
+                // 해당 두 작업에서는 인증 처리하겠다는 것
                 .authorizeRequests().antMatchers("/auth/**", "/file/**").permitAll()
-                // 나머지는 인증을 처리하겠다는 것
+                // 나머지는 인증을 처리하지 않겠다는 것
                 .anyRequest().authenticated();
         
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
