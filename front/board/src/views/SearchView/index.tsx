@@ -1,19 +1,63 @@
 import React, { useEffect, useState } from 'react'
-
-import { Box, Grid, Pagination, Stack, Typography } from '@mui/material'
-import PopularCard from 'src/components/PopularCard'
 import { useParams } from 'react-router-dom'
-import { IPreviewItem } from 'src/interfaces';
 
-import { BOARD_LIST } from 'src/mock';
+import axios, { AxiosResponse } from 'axios';
+import { Box, Grid, Pagination, Stack, Typography } from '@mui/material'
+
 import BoardListItem from 'src/components/BoardListItem';
+import PopularCard from 'src/components/PopularCard'
 import { getPageCount } from 'src/utils';
 import { usePagingHook } from 'src/hooks';
+import ResponseDto from 'src/apis/response';
+import { GetSearchListResponseDto, GetTop15RelatedSearchWrodResponseDto } from 'src/apis/response/board';
+import { GET_SEARCH_LIST_URL, GET_TOP15_RELATED_SEARCH_WORD_URL } from 'src/constants/api';
 
 export default function SearchView() {
 
+    //          Hook            //
     const { content } = useParams();
     const { viewList, pageNumber, boardList, setBoardList, onPageHandler, COUNT } = usePagingHook(5);
+
+    const [popularList, setPopularList] = useState<string[]>([]);
+    const [previousSearchWord, setpreviousSearchWord] = useState<string>('');
+
+    let loadFlag = true;
+
+    //          Event Handler            //
+    const getSearchList = () => {
+        axios.get(GET_SEARCH_LIST_URL(content as string, previousSearchWord))
+        .then((response) => getSearchListResponseHandler(response))
+        .catch((error) => getSearchListErrorHandler(error));
+    }
+
+    const getTop15RelatedSearchWord = () => {
+        axios.get(GET_TOP15_RELATED_SEARCH_WORD_URL(content as string))
+        .then((response) => getTop15RelatedSearchWordResponseHandler(response))
+        .catch((error) => getTop15RelatedSearchWordErrorHandler(error));
+    }
+
+    //          Response Handler            //
+    const getSearchListResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<GetSearchListResponseDto[]>;
+        if (!result || data === null) return;
+        // []을 적어줘야함
+        setBoardList(data);
+    }
+
+    const getTop15RelatedSearchWordResponseHandler = (response: AxiosResponse<any, any>) => {
+        const { result, message, data } = response.data as ResponseDto<GetTop15RelatedSearchWrodResponseDto>;
+        if (!result || !data) return;
+        setPopularList(data.top15SearchWordList);
+    }
+
+    //          Error Handler            //
+    const getSearchListErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
+
+    const getTop15RelatedSearchWordErrorHandler = (error: any) => {
+        console.log(error.message);
+    }
 
     // const COUNT = 5;
 
@@ -36,18 +80,25 @@ export default function SearchView() {
     //     setViewList(tmpList);
     // }
 
+    //           Use Effect          //
     useEffect(() => {
         //# array.filter(요소 => 조건)
         //? 특정한 조건에 부합하는 요소만 모아서 새로운 배열로 만들어 반환하는 메서드
         //# string.inclues(검색할 문자열)
         //? 해당 문자열에서 검색할 문자열이 존재한다면 true, 아니면 false를 반환하는 메서드
-        const tmp = BOARD_LIST.filter((board) => board.boardTitle.includes(content as string));
-        setBoardList(tmp);
-    }, [content]);
+        // const tmp = BOARD_LIST.filter((board) => board.boardTitle.includes(content as string));
+        // setBoardList(tmp);
+        if (loadFlag) {
+            loadFlag = false;
+        
+            alert('useEffect');
+    
+            getSearchList();
+            getTop15RelatedSearchWord();
+            setpreviousSearchWord(content as string);
+        }
 
-    // useEffect(()=> {
-    //     onPageHandler(pageNumber);
-    // }, [boardList]);
+    }, [content]);
 
   return (
     <Box sx={{ p: '40px 120px', backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
@@ -60,11 +111,11 @@ export default function SearchView() {
             <Grid container spacing={3}>
                 <Grid item sm={12} md={8}>
                     <Stack spacing={2}>
-                        {viewList.length === 0 ? (<Box sx={{ height: '416px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography sx={{ fontSize: '24px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.4)' }}>검색결과가 없습니다.</Typography></Box>) : viewList.map((boardItem) => (<BoardListItem item={boardItem as IPreviewItem} />))}
+                        {viewList.length === 0 ? (<Box sx={{ height: '416px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><Typography sx={{ fontSize: '24px', fontWeight: 500, color: 'rgba(0, 0, 0, 0.4)' }}>검색결과가 없습니다.</Typography></Box>) : viewList.map((boardItem) => (<BoardListItem item={boardItem as GetSearchListResponseDto} />))}
                     </Stack>
                 </Grid>
                 <Grid item sm={12} md={4}>
-                    <PopularCard title='연관 검색어' />
+                    <PopularCard title='연관 검색어' popularList={popularList} />
                 </Grid>
             </Grid>
         </Box>

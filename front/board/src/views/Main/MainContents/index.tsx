@@ -1,20 +1,62 @@
 import { useEffect, useState } from 'react';
 
+import axios, { AxiosResponse } from 'axios';
 import { Box, Grid, Pagination, Typography, Stack } from '@mui/material'
 
 import BoardListItem from 'src/components/BoardListItem'
 import PopularCard from 'src/components/PopularCard'
-import { IPreviewItem } from 'src/interfaces';
-import { BOARD_LIST } from 'src/mock';
 import { getPageCount } from 'src/utils';
 import { usePagingHook } from 'src/hooks';
+import ResponseDto from 'src/apis/response';
+import { GetListResponseDto, GetTop15SearchWrodResponseDto } from 'src/apis/response/board';
+import { GET_LIST_URL, GET_TOP15_SEARCH_WORD_URL } from 'src/constants/api';
 
 export default function MainContents() {
 
+  //          Hook            //
   const { viewList, pageNumber, boardList, setBoardList, onPageHandler, COUNT } = usePagingHook(5);
+  const [ popularList, setPopularList ] = useState<string[]>([]);
+  
+  //          Event Handler            //
+  const getList = () => {
+    axios.get(GET_LIST_URL)
+    .then((response) => getListResponseHandler(response))
+    .catch((error) => getListErrorHandler(error));
+  }
+
+  const getTop15SearchWord = () => {
+    axios.get(GET_TOP15_SEARCH_WORD_URL)
+    .then((response => getTop15SearchWordResponseHandler(response)))
+    .catch((error) => getTop15SearchWordErrorHandler(error));
+  }
+  
+  //          Response Handler            //
+  const getListResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<GetListResponseDto[]>
+    if (!result || data === null) return;
+    // paging.hook.ts 
+    setBoardList(data);
+  }
+  
+  const getTop15SearchWordResponseHandler = (response: AxiosResponse<any, any>) => {
+    const { result, message, data } = response.data as ResponseDto<GetTop15SearchWrodResponseDto>;
+    if (!result || !data) return;
+    setPopularList(data.top15SearchWordList);
+  }
+  
+  //          Error Handler            //
+  const getListErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
+
+  const getTop15SearchWordErrorHandler = (error: any) => {
+    console.log(error.message);
+  }
 
   useEffect(() => {
-    setBoardList(BOARD_LIST);
+    // setBoardList(BOARD_LIST);
+    getList();
+    getTop15SearchWord();
   }, [])
 
   return (
@@ -26,11 +68,11 @@ export default function MainContents() {
         <Grid container spacing={3}>
           <Grid item sm={12} md={8}>
             <Stack spacing={2}>
-              {viewList.map((boardItem) => (<BoardListItem item={boardItem as IPreviewItem} />))}
+              {viewList.map((boardItem) => (<BoardListItem item={boardItem as GetListResponseDto} />))}
             </Stack>
           </Grid>
           <Grid item sm={12} md={4}>
-            <PopularCard title="인기 검색어" />
+            <PopularCard title="인기 검색어" popularList={popularList} />
           </Grid>
         </Grid>
       </Box>

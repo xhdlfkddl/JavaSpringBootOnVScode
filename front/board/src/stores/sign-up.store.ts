@@ -13,17 +13,46 @@ interface ISignUpStore {
     email: string;
     password: string;
     passwordCheck: string;
-    nickName: string;
+    nickname: string;
     telNumber: string;
     address: string;
     addressDetail: string;
     setEmail: (str: string) => void;
     setPassword: (str: string) => void;
     setPasswordCheck: (str: string) => void;
-    setNickName: (str: string) => void;
+    setNickname: (str: string) => void;
     setTelNumber: (str: string) => void
     setAddress: (str: string) => void;
     setAddressDetail: (str: string) => void;
+
+    // 빈값이 있는지 없는지
+    signUpError: boolean;
+    setSignUpError: (signUpError: boolean) => void;
+
+    // 이메일 형식 체크
+    emailPatternCheck: boolean | null;
+    setEmailPatternCheck: (emailPatternCheck: boolean | null) => void;
+    // 이메일 중복 체크
+    emailValidate: boolean | null;
+    setEmailValidate: (emailValidate: boolean | null) => void;
+
+    // 비밀번호 형식 체크
+    passwordPatternCheck: boolean | null;
+    setPasswordPatternCheck: (passwordPatternCheck: boolean) => void;
+    // 비밀번호 중복 체크
+    passwordValidate: boolean | null;
+    setPasswordValidate: (passwordValidate: boolean) => void;
+    
+    // 닉네임 중복 체크
+    nicknameValidate: boolean | null;
+    setNicknameValidate: (nicknameValidate: boolean) => void;
+    
+    // 휴대폰 번호 형식 체크
+    telNumberPatternCheck: boolean | null;
+    setTelNumberPatternCheck: (telNumberPatternCheck: boolean) => void;
+    // 휴대폰 번호 중복 체크
+    telNumberValidate: boolean | null;
+    setTelNumberValidate: (telNumberValidate: boolean) => void;
 }
 
 //^ create 메서드를 사용해서 store를 생성
@@ -31,17 +60,44 @@ const useStore = create<ISignUpStore>((set) => ({
     email: '',
     password: '',
     passwordCheck: '',
-    nickName: '',
+    nickname: '',
     telNumber: '',
     address: '',
     addressDetail: '',
-    setEmail: (email) => set((state) => ({...state, email})),
+    setEmail: (email) => {
+        const emailValidator = /^[A-Za-z0-9]*@[A-Za-z0-9]([-.]?[A-Za-z0-9])*\.[A-Za-z0-9]{2,3}$/;
+        const isMatched = emailValidator.test(email);
+        const emailMessage = isMatched ? '' : '이메일 주소 포맷이 맞지 않습니다.';
+        set((state) => ({...state, email, emailMessage}))
+    },
     setPassword: (password) => set((state) => ({...state, password})),
     setPasswordCheck: (passwordCheck) => set((state) => ({...state, passwordCheck})),
-    setNickName: (nickName) => set((state) => ({...state, nickName})),
+    setNickname: (nickname) => set((state) => ({...state, nickname})),
     setTelNumber: (telNumber) => set((state) => ({...state, telNumber})),
     setAddress: (address) => set((state) => ({...state, address})),
     setAddressDetail: (addressDetail) => set((state) => ({...state, addressDetail})),
+
+    signUpError: false,
+    setSignUpError: (signUpError: boolean) => set((state) => ({...state, signUpError})),
+
+    emailPatternCheck: null,
+    setEmailPatternCheck: (emailPatternCheck: boolean | null) => set((state) => ({...state, emailPatternCheck})),
+    
+    emailValidate: null,
+    setEmailValidate: (emailValidate: boolean | null) => set((state) => ({...state, emailValidate})),
+
+    passwordPatternCheck: null,
+    setPasswordPatternCheck: (passwordPatternCheck: boolean) => set((state) => ({...state, passwordPatternCheck})),
+    passwordValidate: null,
+    setPasswordValidate: (passwordValidate: boolean) => set((state) => ({...state, passwordValidate})),
+
+    nicknameValidate: null,
+    setNicknameValidate: (nicknameValidate: boolean) => set((state) => ({...state, nicknameValidate})),
+
+    telNumberPatternCheck: null,
+    setTelNumberPatternCheck: (telNumberPatternCheck: boolean) => set((state) => ({...state, telNumberPatternCheck})),
+    telNumberValidate: null,
+    setTelNumberValidate: (telNumberValidate: boolean) => set((state) => ({...state, telNumberValidate})),
 }))
 
 export default useStore;

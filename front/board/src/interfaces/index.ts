@@ -1,3 +1,9 @@
+
+import Board from './Board.Interface';
+import Comment from './Comment.Interface';
+import Liky from './Liky.Interface';
+import User from './User.Interface';
+
 //? 인터페이스 관리
 export interface IPreviewItem {
     img: string | null;
@@ -34,3 +40,5 @@ export interface ICommentItem {
     commentContent: string;
     commentDatetime: string;
 }
+
+export type { Board, Comment, Liky, User };

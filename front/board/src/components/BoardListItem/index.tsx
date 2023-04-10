@@ -1,13 +1,16 @@
-import { Avatar, Box, Card, CardActionArea, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { IPreviewItem } from "src/interfaces";
+
+import { Avatar, Box, Card, CardActionArea, Typography } from "@mui/material";
+
+import { GetListResponseDto, GetMyListResponseDto, GetSearchListResponseDto } from "src/apis/response/board";
 
 interface Props {
-  item: IPreviewItem;
+  item: GetListResponseDto | GetSearchListResponseDto | GetMyListResponseDto;
 }
 
 export default function BoardListItem({ item }: Props) {
 
+  //          Hook            //
   const navigator = useNavigate();
 
   return (
@@ -16,7 +19,7 @@ export default function BoardListItem({ item }: Props) {
         <Box>
           <Box sx={{ display: "flex" }}>
             <Box sx={{ mr: "8px" }}>
-              <Avatar alt={item.writerNickname} src={item.writerProfile} />
+              <Avatar alt={item.writerNickname} src={item.writerProfileUrl ? item.writerProfileUrl : ''} />
             </Box>
             <Box>
               <Typography
@@ -32,7 +35,7 @@ export default function BoardListItem({ item }: Props) {
                   color: "rgba(0, 0, 0, 0.7)",
                 }}
               >
-                {item.writeDate}
+                {item.boardWriteDatetime}
               </Typography>
             </Box>
           </Box>
@@ -63,11 +66,11 @@ export default function BoardListItem({ item }: Props) {
             >{`댓글 ${item.commentCount} · 좋아요 ${item.likeCount} · 조회수 ${item.viewCount}`}</Typography>
           </Box>
         </Box>
-        {item.img && (
+        {item.boardImgUrl && (
           <Box>
             <Box
               component="img"
-              src={item.img}
+              src={item.boardImgUrl}
               sx={{ height: "152px", width: "152px", borderRadius: "5%" }}
             />
           </Box>

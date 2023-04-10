@@ -1,10 +1,11 @@
 plugins {
 	id 'java'
+	id 'war'
 	id 'org.springframework.boot' version '2.7.9'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
-group = 'com.koreait'
+group = 'com.taeyoung'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
@@ -20,19 +21,28 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// Spring Scurity 의존정 주입
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	// https://mvnrepository.com/artifact/io.swagger/swagger-annotations
-	implementation group: 'io.swagger', name: 'swagger-annotations', version: '1.6.9'
-	// 유효성 검사에 사용되는 라이브러리
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	// https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-quartz'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	// tokenProvider에서 사용
 	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+	// springfox-swagger2
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	// springfox-swagger-ui
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+	// jsoup
+	implementation group: 'org.jsoup', name: 'jsoup', version: '1.15.4'
+
+
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {
